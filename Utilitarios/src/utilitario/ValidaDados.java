@@ -1,6 +1,6 @@
 /*
  *Esta classe serve para validação de entrada de dados, os metodos validarão as entradas e
- *retornaram um true vara valido  e false para invalido
+ * retornaram um true para valido  e false para invalido
  */
 package utilitario;
 
@@ -14,9 +14,11 @@ import java.util.InputMismatchException;
 public class ValidaDados {
     // esta classe não  necessita de um construtor com parametros.
     
-    // este metodo trabalha apenas com os numeros em formato de strings sem carateteres especiais
-    //este metodo trabalha com inteiros
+
     public static boolean isCpf(String cpf){
+        // este metodo trabalha apenas com os numeros em formato de strings sem carateteres especiais
+        // melhoria a ser aplicada: substituir as conversoes de String para inteiro, por char, e usar o metodo charAt
+        // para estrair os inteiros.
         
         if((cpf.length() != 11) || ("00000000000".equals(cpf))||("11111111111".equals(cpf))||
            ("22222222222".equals(cpf)) || ("33333333333".equals(cpf)) || ("44444444444".equals(cpf))||
@@ -28,7 +30,11 @@ public class ValidaDados {
         int soma = 0;
         // verificaçao do primeiro digito
         for (int i = 1; i <= 9; i++) {
-            soma += Integer.parseInt(nove.substring(i-1, i)) * (11 - i);
+            try{
+                soma += Integer.parseInt(nove.substring(i-1, i)) * (11 - i);
+            }catch(NumberFormatException ex){
+                return false;
+            }    
         }
         // primeiro digito 
         int dig1 = 11 - (soma % 11);
@@ -42,7 +48,11 @@ public class ValidaDados {
         soma = 0;
         nove = cpf.substring(0, 10);
         for (int i = 1; i <= 10; i++) {
-            soma += Integer.parseInt(nove.substring(i-1, i)) * (12 - i);
+            try{
+                soma += Integer.parseInt(nove.substring(i-1, i)) * (12 - i);
+            }catch(NumberFormatException ex){
+                return false;
+            }    
         }
         // primeiro digito 
         int dig2 = 11 - (soma % 11);
@@ -53,17 +63,23 @@ public class ValidaDados {
         }
         
         // validacao
-        return dig1 == Integer.parseInt(cpf.substring(9, 10)) && (dig2 == Integer.parseInt(cpf.substring(cpf.length() -1)));
-        
+        try{
+            return dig1 == Integer.parseInt(cpf.substring(9, 10)) && (dig2 == Integer.parseInt(cpf.substring(cpf.length() -1)));
+        }catch(NumberFormatException ex){
+            return false;
+        }
     }
-    //foi trabalhado com char
+    
     public static boolean isCnpj(String cnpj){
+        // este metodo trabalha com char e usa o metodo charAt para estrair os numeros inteiros
+       
         if((cnpj.length() != 14) || ("00000000000000".equals(cnpj))||("11111111111111".equals(cnpj))||
            ("22222222222222".equals(cnpj)) || ("33333333333333".equals(cnpj)) || ("44444444444444".equals(cnpj))||
            ("55555555555555".equals(cnpj)) || ("66666666666666".equals(cnpj)) || ("77777777777777".equals(cnpj))||
            ("88888888888888".equals(cnpj)) || ("99999999999888".equals(cnpj))){
            return false;
         }
+       
         char dig13, dig14;
         int soma, resto, num, peso;
         
